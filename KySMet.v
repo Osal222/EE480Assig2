@@ -8,33 +8,16 @@
 `define MEMSIZE [65535:0]
 
 // opcode values, also state numbers
-`define OPadd	4'b0000
-`define OPinvf	4'b0001
-`define OPaddf	4'b0010
-`define OPmulf	4'b0011
-`define OPand	4'b0100
-`define OPor	4'b0101
-`define OPxor	4'b0110
-`define OPany	4'b0111
-`define OPdup	4'b1000
-`define OPshr	4'b1001
-`define OPf2i	4'b1010
-`define OPi2f	4'b1011
-`define OPld	4'b1100
-`define OPst	4'b1101
-`define OPjzsz	4'b1110
-`define OPli	4'b1111
-
-// state numbers only
-`define OPjz	`OPjzsz
-`define OPsys	5'b10000
-`define OPsz	5'b10001
-`define Start	5'b11111
-`define Start1	5'b11110
-
-// source field values for sys and sz
-`define SRCsys	6'b000000
-`define SRCsz	6'b000001
+`define trap	16'b0000000000000000
+`define ret	16'b0000000000000001
+`define pushen	16'b0000000000000010
+`define popen	16'b0000000000000100
+`define allen	16'b0000000000001000
+`define call	16'b0001000000000000
+`define jump 	16'b0001000000000001
+`define jumpf	16'b0001xxxx00000011
+`define lnot 	16'b0010xxxxxxxx0000
+`define jumpf	16'b0001xxxx00000011
 
 module processor(halt, reset, clk);
 output reg halt;
