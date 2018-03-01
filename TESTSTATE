@@ -9,7 +9,7 @@
 `define DEST      [11:8]
 `define SRC       [7:4]
 `define IMMED     [7:0]
-`define teststat[32:0]
+`define TB  [32:0]
 
 
 
@@ -59,6 +59,7 @@ reg `ENSIZE enstack = ~0;
 reg `WORD pc = 0;
 reg `STATE s = `Start;
 reg `WORD ir;
+reg	`TB teststat =0;
 
 	
 always @(reset) begin
@@ -74,129 +75,142 @@ always @(posedge clk) begin
 	    `Start:
 	    	begin
 	    		ir <= mainmem[pc]; s <= `Start1;
-			teststat[0]=1
+			teststat[0]=1;
 	    	end
 	    `Start1:
 	    	begin
-	    		pc <= pc + 1;
-			teststat[1]=1
-	    		case (ir `OPCODE)
-	    			`OPnoarg:
-						teststat[1]=1
-	    				s <= { 1'b1, ir `SECOP };
-	    			`OPtwoarg:
-						teststat[2]=1
-	    				s <= { 1'b1, ir `SECOP };
-	    			default:
-						teststat[3]=1
-	    				s <= ir `OPCODE;
-	    		endcase
+			if (enstack[0]==1) begin
+				pc <= pc + 1;
+				teststat[1]=1;
+					case (ir `OPCODE)
+						`OPnoarg: begin
+							teststat[1]=1;
+							s <= { 1'b1, ir `SECOP };
+							end
+						`OPtwoarg: begin
+							teststat[2]=1;
+							s <= { 1'b1, ir `SECOP };
+							end
+						default: begin
+							teststat[3]=1;
+							s <= ir `OPCODE;
+							end
+					endcase
+			end
+			if (enstack[0]==0) begin
+					case (ir `OPCODE)
+						`OPnoarg: begin
+							teststat[27]=1;
+							s <= { 1'b1, ir `SECOP };
+							end
+					endcase
+			end
 	    	end
 	    `OPadd:
 	    	begin
-				teststat[4]=1
+				teststat[4]=1;
                         regfile[ir `DEST] <= regfile[ir `SRC] + regfile[ir `SECOP];
 	    		s <= `Start;
 	    	end
 	    `OPand:
 	    	begin
-				teststat[4]=1
+				teststat[4]=1;
 	    		regfile[ir `DEST] <= regfile[ir `SRC] & regfile[ir `SECOP];
 	    		s <= `Start;
 	    	end
 	    `OPmul:
 	    	begin
-				teststat[5]=1
+				teststat[5]=1;
 	    		regfile[ir `DEST] <= regfile[ir `SRC] * regfile[ir `SECOP];
 	    		s <= `Start;
 	    	end
 	    `OPor:
 	    	begin
-				teststat[6]=1
+				teststat[6]=1;
 	    		regfile[ir `DEST] <= regfile[ir `SRC] | regfile[ir `SECOP];
 	    		s <= `Start;
 	    	end
 	    `OPsll:
 	    	begin
-				teststat[5]=1
+				teststat[5]=1;
 	    		regfile[ir `DEST] <= regfile[ir `SRC] << (regfile[ir `SECOP] & 15);
 	    		s <= `Start;
 	    	end
 	    `OPslt:
 	    	begin
-				teststat[6]=1
+				teststat[6]=1;
 	    		regfile[ir `DEST] <= (regfile[ir `SRC] < regfile[ir `SECOP]);
 	    		s <= `Start;
 	    	end
 	    `OPsra:
 	    	begin
-				teststat[7]=1
+				teststat[7]=1;
 	    		regfile[ir `DEST] <= regfile[ir `SRC] >> (regfile[ir `SECOP] & 15);
 	    		s <= `Start;
 	    	end
 	    `OPxor:
 	    	begin
-				teststat[8]=1
+				teststat[8]=1;
 	    		regfile[ir `DEST] <= regfile[ir `SRC] ^ regfile[ir `SECOP];
 	    		s <= `Start;
 	    	end
 	    `OPli8:
 	    	begin
-				teststat[9]=1
+				teststat[9]=1;
 	    		regfile[ir `DEST] <= { {8{ir `IMMED}}, ir `IMMED };
 	    		s <= `Start;
 	    	end
 	    `OPlu8:
 	    	begin
-				teststat[10]=1
+				teststat[10]=1;
 	    		regfile[ir `DEST] <= (regfile[ir `DEST] & 255) | (ir `IMMED << 8);
 	    		s <= `Start;
 	    	end
 	    `OPgor:
 	    	begin
-				teststat[11]=1
+				teststat[11]=1;
 	    		regfile[ir `DEST] <= regfile[ir `SRC];
 	    		s <= `Start;
 	    	end
 	    `OPleft:
 	    	begin
-				teststat[12]=1
+				teststat[12]=1;
 	    		regfile[ir `DEST] <= regfile[ir `SRC];
 	    		s <= `Start;
 	    	end
 	    `OPlnot:
 	    	begin
-				teststat[13]=1
+				teststat[13]=1;
 	    		regfile[ir `DEST] <= regfile[ir `SRC];
 	    		s <= `Start;
 	    	end
 	    `OPload:
 	    	begin
-				teststat[14]=1
+				teststat[14]=1;
 	    		regfile[ir `DEST] <= mainmem[regfile[ir `SRC]];
 	    		s <= `Start;
 	    	end
 	    `OPneg:
 	    	begin
-				teststat[15]=1
+				teststat[15]=1;
 	    		regfile[ir `DEST] <= -regfile[ir `SRC];
 	    		s <= `Start;
 	    	end
 	    `OPright:
 	    	begin
-				teststat[16]=1
+				teststat[16]=1;
 	    		regfile[ir `DEST] <= regfile[ir `SRC];
 	    		s <= `Start;
 	    	end
 	    `OPstore:
 	    	begin
-				teststat[17]=1
+				teststat[17]=1;
 	    		mainmem[regfile[ir `SRC]] <= regfile[ir `DEST];
 	    		s <= `Start;
 	    	end
 	    `OPcall:
 	    	begin
-				teststat[18]=1
+				teststat[18]=1;
 	    		if (enstack[0] == 1)
 	    			begin
 	    				callstack <= { callstack[47:0], pc };
@@ -206,31 +220,31 @@ always @(posedge clk) begin
 	    	end
 	    `OPjump:
 	    	begin
-				teststat[19]=1
+				teststat[19]=1;
 	    		pc <= mainmem[pc];
 	    		s <= `Start;
 	    	end
 	    `OPjumpf:
 	    	begin
-				teststat[20]=1
+				teststat[20]=1;
 	    		if (regfile[ir `DEST] == 0) enstack <= (enstack & ~1);
 	    		s <= `OPjumpf2;
 	    	end
 	    `OPjumpf2:
 	    	begin
-				teststat[21]=1
+				teststat[21]=1;
 	    		if (enstack[0] == 0) pc <= mainmem[pc];
 	    		s <= `Start;
 	    	end
 	    `OPtrap:
 	    	begin
-				teststat[22]=1
+				teststat[22]=1;
                 $display("trap\n");
 	    		halt <= 1;
 	    	end
 	    `OPret:
 	    	begin
-				teststat[23]=1
+				teststat[23]=1;
 	    		if (enstack[0] == 1)
 	    			begin
 	    				pc <= callstack[15:0];
@@ -240,26 +254,27 @@ always @(posedge clk) begin
 	    	end
 	    `OPallen:
 	    	begin
-				teststat[24]=1
+				teststat[24]=1;
 	    		enstack <= (enstack | 1);
 	    		s <= `Start;
 	    	end
 	    `OPpopen:
 	    	begin
-				teststat[25]=1
+				teststat[25]=1;
 	    		enstack <= (enstack >> 1);
 	    		s <= `Start;
 	    	end
 	    `OPpushen:
 	    	begin
-				teststat[26]=1
+				teststat[26]=1;
 	    		enstack <= ((enstack << 1) | (enstack & 1));
 	    		s <= `Start;
 	    	end
 	    default: halt <= 1;
 	endcase
-end
 	$display(teststat);
+	end
+	
 endmodule
 
 module testbench;
