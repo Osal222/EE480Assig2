@@ -173,7 +173,7 @@ always @(posedge clk) begin
 	    	begin
 	    		if (enstack[0] == 1)
 	    			begin
-	    				callstack <= { callstack[47:0], pc `WORD };
+	    				callstack <= { callstack[47:0], pc };
 	    				pc <= mainmem[pc];
 	    			end
 	    		s <= `Start;

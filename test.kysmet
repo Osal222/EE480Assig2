@@ -1,0 +1,13 @@
+testjumpf:
+	jumpf $u0,endjumpf1
+	trap
+endjumpf1:
+	allen
+	li8 $u0,1
+	jumpf $u0,endjumpf2
+	jump endjumpf3
+endjumpf2:
+	trap
+endjumpf3
+	add $u0,$u1,$u2
+	trap
