@@ -43,8 +43,7 @@
 
 `define Start    5'b11111
 `define Start1   5'b11110
-`define OPcall2  5'b11101
-`define OPjumpf2 5'b11100
+`define OPjumpf2 5'b11101
 
 module processor(halt, reset, clk);
 output reg halt;
@@ -53,7 +52,7 @@ input reset, clk;
 reg `WORD regfile `REGSIZE;
 reg `WORD mainmem `MEMSIZE;
 reg `CALLSIZE callstack = 0;
-reg `ENSIZE enstack = 0;
+reg `ENSIZE enstack = 1;
 reg `WORD pc = 0;
 reg `STATE s = `Start;
 reg `WORD ir;
@@ -172,11 +171,6 @@ always @(posedge clk) begin
 	    	end
 	    `OPcall:
 	    	begin
-	    		pc <= pc + 1;
-	    		s <= `OPcall2;
-	    	end
-	    `OPcall2:
-	    	begin
 	    		if (enstack[0] == 1)
 	    			begin
 	    				callstack <= { callstack[47:0], pc `WORD };
@@ -186,23 +180,22 @@ always @(posedge clk) begin
 	    	end
 	    `OPjump:
 	    	begin
-	    		pc <= mainmem[pc + 1];
+	    		pc <= mainmem[pc];
 	    		s <= `Start;
 	    	end
 	    `OPjumpf:
 	    	begin
-	    		if (regfile[ir `DEST] == 0) begin enstack <= (enstack & ~1); end
-	    		pc <= pc + 1;
+	    		if (regfile[ir `DEST] == 0) enstack <= (enstack & ~1);
 	    		s <= `OPjumpf2;
 	    	end
 	    `OPjumpf2:
 	    	begin
-	    		if (enstack[0] == 0) begin pc <= mainmem[pc]; end
+	    		if (enstack[0] == 0) pc <= mainmem[pc];
 	    		s <= `Start;
 	    	end
 	    `OPtrap:
 	    	begin
-                        $display("trap\n");
+                $display("trap\n");
 	    		halt <= 1;
 	    	end
 	    `OPret:
