@@ -52,7 +52,7 @@ input reset, clk;
 reg `WORD regfile `REGSIZE;
 reg `WORD mainmem `MEMSIZE;
 reg `CALLSIZE callstack = 0;
-reg `ENSIZE enstack = 1;
+reg `ENSIZE enstack = ~0;
 reg `WORD pc = 0;
 reg `STATE s = `Start;
 reg `WORD ir;
