@@ -146,7 +146,7 @@ always @(posedge clk) begin
 	    	end
 	    `OPlnot:
 	    	begin
-	    		regfile[ir `DEST] <= regfile[ir `SRC];
+	    		regfile[ir `DEST] <= ~regfile[ir `SRC];
 	    		s <= `Start;
 	    	end
 	    `OPload:

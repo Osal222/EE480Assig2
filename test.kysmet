@@ -3,11 +3,103 @@ testjumpf:
 	trap
 endjumpf1:
 	allen
-	li8 $u0,1
+	li $u0,1
 	jumpf $u0,endjumpf2
-	jump endjumpf3
+	jump testadd
 endjumpf2:
 	trap
-endjumpf3
+testadd:
+	li $u1,-10
+	li $u2,10
+	add $u0,$u1,$u2
+	jumpf $u0,testand
+	trap
+testand:
+	allen
+	li $u1,6
+	li $u2,4
+	li $u3,-4
+	and $u1,$u1,$u2
+	add $u0,$u1,$u3
+	jumpf $u0,testmul
+	trap
+testmul:
+	allen
+	li $u1,10
+	li $u2,12
+	li $u3,-120
+	mul $u1,$u1,$u2
+	add $u0,$u1,$u3
+	jumpf $u0,testor
+	trap
+testor:
+	allen
+	li $u1,8
+	li $u2,16
+	li $u3,-24
+	or $u1,$u1,$u2
+	add $u0,$u1,$u3
+	jumpf $u0,testsll
+	trap
+testsll:
+	allen
+	li $u1,1
+	li $u2,4
+	li $u3,-16
+	sll $u1,$u1,$u2
+	add $u0,$u1,$u3
+	jumpf $u0,testslt
+	trap
+testslt:
+	allen
+	li $u1,2
+	li $u2,3
+	slt $u3,$u1,$u2
+	li $u4,-1
+	add $u0,$u4,$u3
+	jumpf $u0,testsra
+	trap
+testsra:
+	allen
+	li $u1,-16
+	li $u2,4
+	li $u3,1
+	sra $u1,$u1,$u2
+	add $u0,$u3,$u1
+	jumpf $u0,testxor
+	trap
+testxor:
+	allen
+	li $u1,24
+	li $u2,12
+	li $u3,-20
+	xor $u1,$u1,$u2
+	add $u0,$u1,$u3
+	jumpf $u0,testlnot
+	trap
+testlnot:
+	allen
+	li $u1,-1
+	lnot $u0,$u1
+	jumpf $u0,testneg
+	trap
+testneg:
+	allen
+	li $u1,1
+	neg $u2,$u1
+	add $u0,$u1,$u2
+	jumpf $u0,success
+	trap
+success:
 	add $u0,$u1,$u2
 	trap
+
+
+
+
+
+
+
+
+
+
