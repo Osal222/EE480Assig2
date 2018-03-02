@@ -167,7 +167,7 @@ always @(posedge clk) begin
 	    	begin
 	    		$display("sra\n");
 				teststat[7]=1;
-	    		regfile[ir `DEST] <= regfile[ir `SRC] >> (regfile[ir `SECOP] & 15);
+	    		regfile[ir `DEST] <= $signed(regfile[ir `SRC]) >>> (regfile[ir `SECOP] & 15);
 	    		s <= `Start;
 	    	end
 	    `OPxor:
@@ -313,7 +313,6 @@ always @(posedge clk) begin
 	    	end
 	    default: halt <= 1;
 	endcase
-	$display(teststat);
 	end
 	
 endmodule

@@ -62,7 +62,7 @@ testslt:
 testsra:
 	allen
 	li $u1,-16
-	li $u2,4
+	li $u2,5
 	li $u3,1
 	sra $u1,$u1,$u2
 	add $u0,$u3,$u1
@@ -91,6 +91,7 @@ testneg:
 	jumpf $u0,success
 	trap
 success:
+	allen
 	add $u0,$u1,$u2
 	trap
 
