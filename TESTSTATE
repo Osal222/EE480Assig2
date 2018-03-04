@@ -107,6 +107,10 @@ always @(posedge clk) begin
 			    		begin
 			    			pc <= pc + 1;
 							case (ir `OPCODE)
+								`OPjump:
+								`OPjumpf:
+								`OPcall:
+									s <= ir `OPCODE;
 								`OPnoarg: begin
 									teststat[27]=1;
 									s <= { 1'b1, ir `SECOP };
