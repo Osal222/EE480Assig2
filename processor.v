@@ -52,6 +52,7 @@ input reset, clk;
 
 reg `WORD regfile `REGSIZE;
 reg `WORD mainmem `MEMSIZE;
+reg `WORD datamem `MEMSIZE;
 reg `CALLSIZE callstack = 0;
 reg `ENSIZE enstack = ~0;
 reg `WORD pc = 0;
@@ -194,7 +195,7 @@ always @(posedge clk) begin
 	    `OPload:
 	    	begin
 	    		$display("load\n");
-	    		regfile[ir `DEST] <= mainmem[regfile[ir `SRC]];
+	    		regfile[ir `DEST] <= datamem[regfile[ir `SRC]];
 	    		s <= `Start;
 	    	end
 	    `OPneg:
@@ -212,7 +213,7 @@ always @(posedge clk) begin
 	    `OPstore:
 	    	begin
 	    		$display("store\n");
-	    		mainmem[regfile[ir `SRC]] <= regfile[ir `DEST];
+	    		datamem[regfile[ir `SRC]] <= regfile[ir `DEST];
 	    		s <= `Start;
 	    	end
 	    `OPcall:
