@@ -11,8 +11,6 @@
 `define IMMED     [7:0]
 `define TB  [32:0]
 
-
-
 // State numbers for instructions with unique opcodes
 `define OPadd    4'b0001
 `define OPand    4'b0010
@@ -288,7 +286,7 @@ always @(posedge clk) begin
 				teststat[23]=1;
 	    		if (enstack[0] == 1)
 	    			begin
-	    				pc <= callstack[15:0];
+	    				pc <= callstack[15:0] + 1;
 	    				callstack <= callstack >> 16;
 	    			end
 	    		s <= `Start;
@@ -304,7 +302,7 @@ always @(posedge clk) begin
 	    	begin
 	    		$display("popen\n");
 				teststat[25]=1;
-	    		enstack <= (enstack >> 1);
+	    		enstack <= { 1'b1, enstack[31:1] };
 	    		s <= `Start;
 	    	end
 	    `OPpushen:
@@ -327,7 +325,7 @@ wire halted;
 processor PE(halted, reset, clk);
 initial begin
   $dumpfile;
-  $dumpvars(0, PE);
+  $dumpvars;
   #10 reset = 1;
   #10 reset = 0;
   while (!halted) begin

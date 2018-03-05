@@ -88,9 +88,106 @@ testneg:
 	li $u1,1
 	neg $u2,$u1
 	add $u0,$u1,$u2
+	jumpf $u0,testcall
+	trap
+testcall:
+	allen
+	call calla
+testgor:
+	li $u1,1000
+	li $u2,-1000
+	li $u0,50
+	gor $u0,$u1
+	add $u0,$u0,$u2
+	jumpf $u0,testleft
+	trap
+testleft:
+	allen
+	li $u1,1000
+	li $u2,-1000
+	li $u0,50
+	left $u0,$u1
+	add $u0,$u0,$u2
+	jumpf $u0,testright
+	trap
+testright:
+	allen
+	li $u1,1000
+	li $u2,-1000
+	li $u0,50
+	right $u0,$u1
+	add $u0,$u0,$u2
+	jumpf $u0,testjump
+	trap
+testjump:
+	allen
+	jump testenable
+	trap
+testenable:
+	li $u0,0
+	li $u1,-10
+	li $u2,10
+	jumpf $u0,testenable2
+	trap
+testenable2:
+	add $u1,$u1,$u2
+	pushen
+	call calla
+	jump testenable3
+	trap
+testenable3:
+	jumpf $u0,testenable4
+	trap
+testenable4:
+	allen
+	add $u1,$u1,$u2
+	jumpf $u1,testenable5
+	trap
+testenable5:
+	allen
+	li $u1,-10
+	li $u2,10
+	popen
+	add $u1,$u1,$u2
+	popen
+	jumpf $u1,kill
+	add $u1,$u1,$u2
+	jumpf $u1,testloadstore
+	trap
+testloadstore:
+	allen
+	li $u1,-10
+	li $u2,10
+	li $u4,500
+	li $u3,10000
+	store $u2,$u3
+	load $u4,$u3
+	add $u0,$u1,$u4
 	jumpf $u0,success
 	trap
 success:
 	allen
-	add $u0,$u1,$u2
+	mul $u0,$u1,$u2
+	trap
+
+calla:
+	call callb
+	and $u0,$u1,$u2
+	ret
+
+callb:
+	call callc
+	or $u0,$u1,$u2
+	ret
+
+callc:
+	call calld
+	xor $u0,$u1,$u2
+	ret
+
+calld:
+	mul $u0,$u1,$u2
+	ret
+
+kill:
 	trap
